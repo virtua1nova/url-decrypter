@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         VikACG加密链接转换器
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
-// @description  绕过广告页面，在当前游戏分享页解密数据链接，并在旁边创建节点，以提供复制功能；此外，如果因渲染问题未成功自动解密&创建节点时，可手动进行：右侧菜单，最下方"解密&创建节点"按钮
+// @version      1.2.1
+// @description  本脚本提供了一种绕过广告页面，在当前页直接获取资源链接的方式，并提供复制功能（在原下载链接旁边可以看到）；此外，若因渲染问题未能自动解密&创建节点时，如某些资源需要评论(或其他手段)才能显示，本脚本还提供了手动的方式：右侧悬浮菜单，最下方"解密&创建节点"按钮，在完成前置条件后，点击该按钮，可到达相同的效果。
 // @author       virtual___nova@outlook.com
 // @match        https://www.vikacg.com/p/*.html
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=vikacg.com
@@ -3410,6 +3410,7 @@
             }
         }, defaultDelay * 4);
     }
+    // 添加按钮
     function addBtnGenerate(times) {
         setTimeout(() => {
             let bFooter = document.querySelector('.bar-footer');
@@ -3422,7 +3423,8 @@
                     return console.error(`[${new Date()}: 已到达最大次数]`);
                 }
             }
-            // 手动生成链接
+            // 获取自定义属性，与样式相关
+            const dataVx = bFooter.getAttributeNames().find(item => item.startsWith("data-v"));
             const btnGenerate = document.createElement('div');
             btnGenerate.id = "xx-btn-generate";
             btnGenerate.className = "bar-item";
@@ -3431,9 +3433,9 @@
             const span = document.createElement('span');
             span.innerText = "解密&创建节点";
             span.className = "bar-item-desc";
-            btnGenerate.setAttribute('data-v-ab6caa62', '');
-            span.setAttribute('data-v-ab6caa62', '');
-            i.setAttribute('data-v-ab6caa62', '');
+            btnGenerate.setAttribute(dataVx, '');
+            span.setAttribute(dataVx, '');
+            i.setAttribute(dataVx, '');
             btnGenerate.appendChild(i);
             btnGenerate.appendChild(span);
             bFooter.appendChild(btnGenerate);
